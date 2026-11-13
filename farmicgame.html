@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title> </title>
+
+<style>
+.container{
+	display:flex; 
+	gap:1px;
+}
+/*this is needed for older browsers that dont support gap*/
+.container > * {
+    margin-right: 15px;
+    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#sidebar{
+	width:fit-content;
+	background-color:lightgreen;
+}
+#thegame{
+	width:80%;
+	height:80vh;/*80% of viewport*/
+	background-color:blue;
+}
+
+</style>
+
+</head>
+
+
+<body>
+<center>
+<h1>GAME NAME HERE</h1>
+</center>
+<div class="container">
+	<div id="sidebar">
+	    <button onclick="instruct()">instructions</button><br>
+	    <button onclick="restart()">restart</button><br>
+	    <button onclick="changep()">change player</button><br>
+	    <div id="cplayer"></div>
+	    <div id="phealth"></div>
+	    <div id="rs"></div>
+	    <br>
+	</div>
+
+	<center>
+	<div id="thegame">THE GAME HERE</div>
+	</center>
+
+</div>
+
+<script src="gameplay.js"></script>
+
+<script>
+//main
+game();
+</script>
+
+</body>
+
+
+</html>
