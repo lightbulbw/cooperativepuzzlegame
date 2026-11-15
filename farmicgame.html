@@ -6,6 +6,15 @@
 <title> </title>
 
 <style>
+body{
+	background-color:black;
+}
+.title{
+	color:blue;
+	position:relative;
+	margin-left:-10%;
+	display:inline;
+}
 .container{
 	display:flex; 
 	gap:0px;
@@ -26,11 +35,38 @@
 	width:200px;
 	height:fit-content;
 	background-color:lightgreen;
+	border: 5px solid green; 
+    	border-style:outset;
 }
 #thegame{
 	width:fit-content;
 	height:435px;
 	background-color:gray;
+	border: 10px solid yellow; 
+    	border-style:outset;
+}
+
+#overlay{
+	top: 0;
+    	left: 0;
+	width: 100%;
+  	height: 100%;
+	position: fixed;
+	background-color: black;
+	display:none;
+	background: rgba(64, 64, 64, 0.5);
+	z-index: 999999;
+	overflow: auto;
+
+}
+#exit{
+	display:none;
+	opacity: 1;
+}
+#mypopup{
+	display:none;
+	opacity: 1;
+	background-color:yellow;
 }
 
 </style>
@@ -40,7 +76,36 @@
 
 <body>
 <center>
-<h1>Cooperative Escape Room</h1>
+<div id="overlay">
+	<div id="mypopup">
+		<center>
+		<button id="exit" onclick="removepopup()">Exit</button>
+		</center>
+		<div id="]1" style="display:none;">
+			<div id="success1"></div><br>
+			<button onclick="updigit(1)">/\</button>
+			<button onclick="updigit(2)">/\</button>
+			<button onclick="updigit(3)">/\</button><br>
+			<div id="codeenter"></div>
+			<button onclick="downdigit(1)">\/</button>
+			<button onclick="downdigit(2)">\/</button>
+			<button onclick="downdigit(3)">\/</button>
+		</div>
+		<div id="]2" style="display:none;">]2</div>
+		<div id="]3" style="display:none;">]3</div>
+		<div id="b" style="display:none; position:relative; font-size:200px;">&nbsp;&#128214;&nbsp; 
+			<center>
+			<div id="B" style="position:absolute; top:60px;
+        left:90px; display:none; z-index:999; font-size:50px;"></div>
+			</center>
+		</div>
+		<div id="0" style="display:none;">0</div>
+		<div id="p" style="display:none;">Congratulations you solved this puzzle!<br> You have received a knight chest plate as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked</div>
+	</div>
+</div>
+</center>
+<center>
+<h1 class="title">Escape The Haunted Castle<br><font style="font-size:20px;">Cooperative Escape Room</font></h1>
 <div id="message">&#128123; To escape you have to solve puzzles and reassemble the knight armor</div>
 </center>
 <div class="container">
@@ -61,6 +126,7 @@
 
 </div>
 
+<script src="custompopup.js"></script>
 <script src="gameplay.js"></script>
 
 <script>
