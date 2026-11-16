@@ -2,30 +2,32 @@ var board=[];//2d array
 var xlength=40;//min value is17
 var ylength=15;//min value is 10
 
-var initx1pos=3;
-var inity1pos=3;
+var puzzle=[false,false,false,false,false];
+var gotarmor=[false,false,false,false];
 var freeze=false;
 var player1={
   ability:"UV vision",
   health:3,
   nbpuzzlesol:0,
-  xpos:initx1pos,
-  ypos:inity1pos,
+  xpos:3,
+  ypos:3,
   inventory:[".",".",".",".",".",".",".","."]
 };
-var initx2pos=xlength-4;
-var inity2pos=ylength-4;
 var player2={
   ability:"go through thin walls",
   health:3,
   nbpuzzlesol:0,
-  xpos:initx2pos,
-  ypos:inity2pos,
+  xpos:xlength-4,
+  ypos:ylength-4,
   inventory:[".",".",".",".",".",".",".","."]
 };
 var cp=1;//current player
 var cplayer=player1;
-
+//armor stand
+var as={
+xpos:1,
+ypos:Math.floor(ylength/2)-1
+}
 //pressure plates
 var ptiles=[
 	{xpos:0,ypos:0},
@@ -37,15 +39,10 @@ var traps=[
 	{xpos:0,ypos:0}   
 ];
 
-var mirror1={
-xpos:0,
-ypos:0
-}
-
-var mirror2={
-xpos:0,
-ypos:0
-}
+var mirrors=[
+	{xpos:0,ypos:0},
+	{xpos:0,ypos:0}   
+];
 
 var books=[
 	{xpos:0,ypos:1},
@@ -54,12 +51,14 @@ var books=[
 	{xpos:0,ypos:4}     
 ];
 var codebook=1;
-var code1=1;
-var code2=1;
-var code3=1;
-var c1=0;
-var c2=0;
-var c3=0;
+var code=[1,1,1];
+var c=[0,0,0];
+var rnbl=-1;
+var portals=[
+	{xpos:xlength-2,ypos:ylength-2},
+	{xpos:xlength-2,ypos:1}, 
+	{xpos:1,ypos:1},
+];
 
 var chests=[
 	{xpos:xlength-16,ypos:1},
@@ -76,12 +75,8 @@ var potionbook={
 xpos:0,
 ypos:0
 }
-var potioncolor1=0;
-var potioncolor2=0;
-var potioncolor3=0;
-var pcolor1=0;
-var pcolor2=0;
-var pcolor3=0;
+var potioncolor=[0,0,0];
+var pcolor=[0,0,0];	
 
 var rats=[
 	{xpos:0,ypos:0},
@@ -99,23 +94,40 @@ var soup=[
         [0, 0, 0] 
 ]
 
-var bat=2;//shared resource
+var bat=3;//shared resource
 
 var sidebartxt="";
 var dispboard="";
 var message="&#128123;";
 var booktext="";
 var chest="";
+var codem="";
 var showplate="";
 
 function restart(){
 	console.log("restart");
+	hideshow(false,"playagain");
+	removepopup();
 	cp=1;
+	cplayer=player1;
 	player1.health=3;
 	player1.nbpuzzlesol=0;
 	player2.health=3;
 	player2.nbpuzzlesol=0;
-	cplayer=player1;
+	
+	player1.xpos=3;
+	player1.ypos=3;
+
+	player2.xpos=xlength-4;
+	player2.ypos=ylength-4;
+
+	player1.inventory=[".",".",".",".",".",".",".","."];
+	player2.inventory=[".",".",".",".",".",".",".","."];
+
+	puzzle=[false,false,false,false,false];
+	gotarmor=[false,false,false,false];
+	bat=3;
+	
 	for(var i=0; i<ptiles.length;i++){
 		ptiles[i].xpos=0;
 		ptiles[i].ypos=0;
@@ -124,11 +136,55 @@ function restart(){
 		traps[i].xpos=0;
 		traps[i].ypos=0;
 	}
+	for(var i=0; i<mirrors.length;i++){
+		mirrors[i].xpos=0;
+		mirrors[i].ypos=0;
+	}
+	for(var i=0; i<books.length;i++){
+		books[i].xpos=0;
+	}
+	code=[1,1,1];
+	c=[0,0,0];
+	potion1={
+		xpos:0,
+		ypos:0
+	}
+	gotpotion=false;
+	potionbook={
+		xpos:0,
+		ypos:0
+	}
+	potioncolor=[0,0,0];
+	pcolor=[0,0,0];
+	for(var i=0; i<rats.length;i++){
+		rats[i].xpos=0;
+		rats[i].ypos=0;
+	}
+	for(var i=0; i<food.length;i++){
+		food[i].xpos=0;
+		food[i].ypos=0;
+	}
+	
+	sidebartxt="";
+	dispboard="";
+	message="&#128123;";
+	booktext="";
+	chest="";
+	codem="";
+	showplate="";
+	document.getElementById("light").innerHTML = sidebartxt;
+	document.getElementById("thegame").innerHTML = dispboard;
+	document.getElementById("message").innerHTML = message;
+	document.getElementById("chestmessage").innerHTML = chest;
+
+	populateboard();
+	showboard();
+	dispinfo();
 }
 function instruct(){
 	console.log("instructions");
 }
-function disppinfo(){
+function dispinfo(){
 	sidebartxt="";
 	sidebartxt=sidebartxt.concat("current player: p" + cp+"<br>");
 
@@ -196,6 +252,8 @@ function randomposgen(range, offset){
 }
 
 function populateboard(){
+	message=message.concat("To escape you have to solve puzzles and reassemble the knight armor");
+	document.getElementById("message").innerHTML = message;
 	for(var i=0; i<xlength; i++){
 		board[i]=[];
 		for(var j=0; j<ylength; j++){
@@ -213,10 +271,10 @@ function populateboard(){
 	for(var i=0; i<chests.length; i++){
 		board[chests[i].xpos][chests[i].ypos]="]";
 	}
-	board[1][1]="0";
-	board[xlength-2][1]="0";
-	board[xlength-2][ylength-2]="0";
-	board[1][Math.floor(ylength/2)-1]="T";
+	for(var i=0; i<portals.length; i++){
+		board[portals[i].xpos][portals[i].ypos]="0";
+	}
+	board[as.xpos][as.ypos]="T";
 	
 	//===random elements===
 	//pressure plates in corridor
@@ -247,18 +305,18 @@ function populateboard(){
 	}
 	
 	//mirrors in mirror room
-	mirror1.xpos = randomposgen(10,1);
-	mirror1.ypos = randomposgen(2,ylength-3);
-	if(board[mirror1.xpos][mirror1.ypos]!="."){
-		mirror1.xpos+=1;
+	for(var i=0;i<mirrors.length; i++){
+		while(board[mirrors[i].xpos][mirrors[i].ypos]!="."){
+			if(i==0){
+			mirrors[i].xpos=randomposgen(10, 1);
+			mirrors[i].ypos=randomposgen(2, ylength-3);
+			}else{
+			mirrors[i].xpos=randomposgen(10, 11);
+			mirrors[i].ypos=randomposgen(2, ylength-5);
+			}	
+		}
+		board[mirrors[i].xpos][mirrors[i].ypos]="m";
 	}
-	board[mirror1.xpos][mirror1.ypos]="m";
-	mirror2.xpos = randomposgen(10,11);
-	mirror2.ypos = randomposgen(2,ylength-5);
-	if(board[mirror2.xpos][mirror2.ypos]!="."){
-		mirror2.xpos+=1;
-	}
-	board[mirror2.xpos][mirror2.ypos]="m";
 	
 	//books in the library
 	for(var i=0;i<books.length; i++){
@@ -271,11 +329,11 @@ function populateboard(){
 	//the codebook is
 	codebook= randomposgen(4,1);
 	//the code is
-	code1= randomposgen(10,0);
-	code2= randomposgen(10,0);
-	code3= randomposgen(10,0);
+	for(var i=0; i<code.length; i++){
+	code[i]= randomposgen(10,0);
+	}
 	booktext="";
-	booktext=booktext.concat(code1+" "+code2+" "+code3);
+	booktext=booktext.concat(code[0]+" "+code[1]+" "+code[2]);
 	document.getElementById("B").innerHTML = booktext;
 	
 	//potions and potion book
@@ -293,23 +351,19 @@ function populateboard(){
 	
 	
 	var colors=["red", "blue", "green"];
-	potioncolor1 = randomposgen(3, 0);
-	potioncolor2 = randomposgen(3, 0);
-	while(potioncolor2 === potioncolor1){
-    		potioncolor2 = randomposgen(3, 0);
+	potioncolor[0] = randomposgen(3, 0);
+	potioncolor[1] = randomposgen(3, 0);
+	while(potioncolor[1] === potioncolor[0]){
+    		potioncolor[1] = randomposgen(3, 0);
 	}
 
-	potioncolor3 = randomposgen(3, 0);
-	while(potioncolor3 === potioncolor2){
-    		potioncolor3 = randomposgen(3, 0);
+	potioncolor[2] = randomposgen(3, 0);
+	while(potioncolor[2] === potioncolor[1]){
+    		potioncolor[2] = randomposgen(3, 0);
 	}
-
-	document.getElementById("firework1").style.setProperty("--firework-color", colors[potioncolor1]);
-
-	document.getElementById("firework2").style.setProperty("--firework-color", colors[potioncolor2]);
-
-	document.getElementById("firework3").style.setProperty("--firework-color", colors[potioncolor3]);
-
+	for(var i=0; i<potioncolor.length; i++){
+		document.getElementById("firework"+(i+1)).style.setProperty("--firework-color", colors[potioncolor[i]]);
+	}
 	//rats
 	for(var i=0;i<rats.length; i++){
 		while(board[rats[i].xpos][rats[i].ypos]!="."){
@@ -362,11 +416,16 @@ function showboard(){
 			board[traps[i].xpos][traps[i].ypos]=".";
 		}
 	}
+	board[as.xpos][as.ypos]="T";
 	for(var i=0; i<chests.length; i++){
 		board[chests[i].xpos][chests[i].ypos]="]";
 	}
-	board[mirror1.xpos][mirror1.ypos]="m";
-	board[mirror2.xpos][mirror2.ypos]="m";
+	for(var i=0; i<portals.length; i++){
+		board[portals[i].xpos][portals[i].ypos]="0";
+	}
+	for(var i=0; i<mirrors.length; i++){
+		board[mirrors[i].xpos][mirrors[i].ypos]="m";
+	}
 	board[potionbook.xpos][potionbook.ypos]="b";
 	for(var i=0;i<rats.length; i++){
 		board[rats[i].xpos][rats[i].ypos]="r";
@@ -436,17 +495,32 @@ function showboard(){
 
 function checkobstacle(nextx, nexty){
 	if(board[nextx][nexty]=="]" && nextx==chests[0].xpos){
-		custompopup("]1");
+		if(puzzle[0]==true){
 		chest="";
-		chest=chest.concat(c1+" "+c2+" "+c3);
-		document.getElementById("codeenter").innerHTML = chest;
+		chest=chest.concat("puzzle complete");
+		document.getElementById("chestmessage").innerHTML = chest;
+		}
+		custompopup("]1");
+		codem="";
+		for(var i=0; i<c.length; i++){
+			codem=codem.concat(c[i]+" ");
+		}
+		document.getElementById("codeenter").innerHTML = codem;
 	}else if(board[nextx][nexty]=="]" && nextx==chests[1].xpos){
+		if(puzzle[2]==true){
+		chest="";
+		chest=chest.concat("puzzle complete");
+		document.getElementById("chestmessage").innerHTML = chest;
+		}
 		custompopup("]2");
 		givepotion();
 	}else if(board[nextx][nexty]=="]" && nextx==chests[2].xpos){
 		custompopup("]3");
 		showsoup();
 		dispexpla();
+	}else if(board[nextx][nexty]=="T"){
+		custompopup("T");
+		theknight();
 	}else if(board[nextx][nexty]=="b"){
 		custompopup("b");
 		if(nextx==potionbook.xpos && nexty==potionbook.ypos){
@@ -461,14 +535,23 @@ function checkobstacle(nextx, nexty){
 		}
 	}else if(board[nextx][nexty]=="0"){
 		custompopup("0");
+		secretl(nextx,nexty);
 	}
 	
 	else if(traps.some(t => nextx == t.xpos && nexty == t.ypos)){
-		message="";
+		message="&#128123;";
 		message=message.concat("CAREFUL! You stepped on a trap and have lost a heart");
-		document.getElementById("message").innerHTML = chest;
-		cplayer.health--;
-		game();
+		document.getElementById("message").innerHTML = message;
+		var ate=false;
+		for(var i=0; i<cplayer.inventory.length; i++){
+			if(cplayer.inventory[i]=="f"){
+				ate=true;
+				cplayer.inventory[i]=".";
+				break;
+			}
+		}
+		if(!ate){cplayer.health--;}
+		dispinfo();
 	}else if(ptiles.some(p => nextx == p.xpos && nexty == p.ypos)){
 		//which ptile is the mover stepping onto?
 		var destindex = -1;
@@ -496,6 +579,23 @@ function checkobstacle(nextx, nexty){
 		//check if both on different pressure plates
 		if(destindex!=-1 && oppindex!=-1 && destindex!=oppindex){
 			custompopup("p");
+			if(puzzle[1]==false){
+				chest="";
+				chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a knight chest plate as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
+				document.getElementById("chestmessage").innerHTML = chest;
+		
+				var cnt=0;
+				while(cnt<cplayer.inventory.length && cplayer.inventory[cnt]!="."){
+					cnt++;
+				}
+				cplayer.inventory[cnt]="c";
+				puzzle[1]=true;
+			}else{
+				chestm="";
+				chest=chest.concat("puzzle complete");
+				document.getElementById("chestmessage").innerHTML = chest;
+		
+			}
 		}
 	}
 	else if(board[nextx][nexty]=="*"){
@@ -506,7 +606,7 @@ function checkobstacle(nextx, nexty){
 		cplayer.inventory[cnt]="*";
 	}
 	else if(board[nextx][nexty]=="m"){
-		if(nextx==mirror1.xpos && nexty==mirror1.ypos){
+		if(nexty==mirrors[0].ypos && nextx==mirrors[0].xpos){
 			custompopup("m1");
 		}else{
 			custompopup("m2");
@@ -514,10 +614,21 @@ function checkobstacle(nextx, nexty){
 	}
 	else if(board[nextx][nexty]=="r"){
 		message="&#128123; CAREFUL! Rats bite, you have lost a heart";
-		cplayer.health--;
-		disppinfo();
+		var ate=false;
+		for(var i=0; i<cplayer.inventory.length; i++){
+			if(cplayer.inventory[i]=="f"){
+				ate=true;
+				cplayer.inventory[i]=".";
+				break;
+			}
+		}
+		if(!ate){cplayer.health--;}
+		dispinfo();
 	}
 	else if(board[nextx][nexty]=="f"){
+		message="&#128123;";
+		message=message.concat("Food can restore your health");
+		document.getElementById("message").innerHTML = message;
 		if(cplayer.health<3){
 			cplayer.health++;
 		}else{
@@ -530,11 +641,21 @@ function checkobstacle(nextx, nexty){
 	}
 }
 
+function roomdescr(nextx,nexty){
+	message="&#128123;";
+	if(nextx<xlength-14 && nexty>ylength-7){
+	message=message.concat("The Mirror room has no entrance.<br>If you dare enter you must move the mirrors such that they look at each other.<br>This will break the spell and help you restor the knight armor");
+	}else if(nextx<xlength-14 && nexty<ylength-6 && nexty>ylength-10){
+	message=message.concat("The corridor has 2 pressure plates that if simultaniously activated will help you restor the knight armor. <br>However, their locations are only marked in UV.<br>Also becareful there are traps!");
+	}
+	document.getElementById("message").innerHTML = message;
+}
+
 function moveup(){
 	if(!freeze){
 		message="&#128123;";
 		checkobstacle(cplayer.xpos,cplayer.ypos-1);
-		
+		roomdescr(cplayer.xpos,cplayer.ypos-1);
 		if(board[cplayer.xpos][cplayer.ypos-1]=="#"){
 			message=message.concat("you have hit a wall");
 		}else if(cplayer.ability!="go through thin walls" && board[cplayer.xpos][cplayer.ypos-1]=="="){
@@ -551,6 +672,7 @@ function moveleft(){
 	if(!freeze){
 		message="&#128123;";
 		checkobstacle(cplayer.xpos-1,cplayer.ypos);
+		roomdescr(cplayer.xpos-1,cplayer.ypos);
 		if(board[cplayer.xpos-1][cplayer.ypos]=="#"){
 			message=message.concat("you have hit a wall");
 		}else if(board[cplayer.xpos-1][cplayer.ypos]=="|"){
@@ -569,6 +691,7 @@ function moveright(){
 	if(!freeze){
 		message="&#128123;";
 		checkobstacle(cplayer.xpos+1,cplayer.ypos);
+		roomdescr(cplayer.xpos+1,cplayer.ypos);
 		if(board[cplayer.xpos+1][cplayer.ypos]=="#"){
 			message=message.concat("you have hit a wall");
 		}else if(cplayer.ability!="go through thin walls" && board[cplayer.xpos+1][cplayer.ypos]=="="){
@@ -585,6 +708,7 @@ function movedown(){
 	if(!freeze){
 		message="&#128123;";
 		checkobstacle(cplayer.xpos,cplayer.ypos+1);
+		roomdescr(cplayer.xpos,cplayer.ypos+1);
 		if(board[cplayer.xpos][cplayer.ypos+1]=="#"){
 			message=message.concat("you have hit a wall");
 		}else if(cplayer.ability!="go through thin walls" && board[cplayer.xpos][cplayer.ypos+1]=="="){
@@ -626,7 +750,15 @@ window.addEventListener("keydown", function(e) {
 
 
 function game(){
-	disppinfo();
+	dispinfo();
 	showboard();
+	if(player1.health<=0 || player2.health<=0){
+		custompopup("lost");
+		chest="";
+		chest=chest.concat("Game Over!!!");
+		document.getElementById("chestmessage").innerHTML = chest;
+		hideshow(false,"exit");
+		hideshow(true,"playagain");
+	}
 }
 

@@ -33,74 +33,124 @@ function removepopup(){
 	hideshow(false,"m2");
 }
 
-//library chest
-function updigit(nb){
+function theknight(){
 	chest="";
-	var code="";
-	if(nb==1){
-		c1++; 
-		if(c1>=10){
-			c1=0;
-		}	
-	}else if(nb==2){
-		c2++; 
-		if(c2>=10){
-			c2=0;
-		}	
-	}if(nb==3){
-		c3++; 
-		if(c3>=10){
-			c3=0;
-		}	
+	for(var i=0; i<cplayer.inventory.length; i++){
+		if(cplayer.inventory[i]=="h"){
+			gotarmor[0]=true;
+			cplayer.inventory[i]=".";
+		}else if(cplayer.inventory[i]=="c"){
+			gotarmor[1]=true;
+			cplayer.inventory[i]=".";
+		}else if(cplayer.inventory[i]=="p"){
+			gotarmor[2]=true;
+			cplayer.inventory[i]=".";
+		}if(cplayer.inventory[i]=="s"){
+			gotarmor[3]=true;
+			cplayer.inventory[i]=".";
+		}
 	}
-	code=code.concat(c1+" "+c2+" "+c3);
-	if(c1==code1 && c2==code2 && c3==code3){
-		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a knight helmet as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
-		document.getElementById("chestmessage").innerHTML = chest;
+	
+	var cnt=0;
+	if(gotarmor[0]){
+		chest=chest.concat("h");
+		cnt++;
+	}else{
+		chest=chest.concat(".&nbsp;");
+	}if(gotarmor[1]){
+		chest=chest.concat("c");
+		cnt++;
+	}else{
+		chest=chest.concat(".&nbsp;");
+	}if(gotarmor[2]){
+		chest=chest.concat("p");
+		cnt++;
+	}else{
+		chest=chest.concat(".&nbsp;");
+	}if(gotarmor[3]){
+		chest=chest.concat("s");
+		cnt++;
+	}else{
+		chest=chest.concat(".&nbsp;");
+	}if(!(gotarmor[0] && gotarmor[1] && gotarmor[2] && gotarmor[3])){
+		chest=chest.concat("<br>please give me all the armorpieces, then I will unlock the Main gate");
 	}
-	document.getElementById("codeenter").innerHTML = code;
+	if(cnt==4){
+		chest=chest.concat("<br><font size=8px, color=red>y</font><font size=8px, color=blue>o</font><font size=8px, color=green>u </font><font size=8px, color=orange>w</font><font size=8px, color=purple>i</font><font size=8px, color=turquise>n</font><font size=8px, color=red>!</font><font size=8px, color=orange>!</font><font size=8px, color=blue>!</font>");
+		hideshow(false,"exit");
+		hideshow(true,"playagain");
+	}
+	document.getElementById("chestmessage").innerHTML = chest;
 }
-function downdigit(nb){
+
+//secret passage
+function secretl(nextx, nexty){
 	chest="";
-	var code="";
-	if(nb==1){
-		c1--; 
-		if(c1<=-1){
-			c1=9;
-		}	
-	}else if(nb==2){
-		c2--; 
-		if(c2<=-1){
-			c2=9;
-		}	
-	}if(nb==3){
-		c3--; 
-		if(c3<=-1){
-			c3=9;
-		}	
+	chest=chest.concat("This is a secrete passage to ");
+	rnbl=-1;
+	if(nextx==portals[0].xpos && nexty==portals[0].ypos){
+		rnbl=randomposgen(2,1);//l or p
+	}else if(nextx==portals[1].xpos && nexty==portals[1].ypos){
+		rnbl=randomposgen(2,0);
+		if(rnbl==1){rnbl=2;}//k or l
+	}else if(nextx==portals[2].xpos && nexty==portals[2].ypos){
+		rnbl=randomposgen(2,0);//k or p
 	}
-	code=code.concat(c1+" "+c2+" "+c3);
-	if(c1==code1 && c2==code2 && c3==code3){
+	if(rnbl==0){
+		chest=chest.concat("the kitchen");
+	}
+	else if(rnbl==1){
+		chest=chest.concat("the potion room");
+	}else if(rnbl==2){
+		chest=chest.concat("the library");
+	}else if(rnbl==-1){
+		chest=chest.concat("nowhere");
+	}
+	document.getElementById("chestmessage").innerHTML = chest;
+}
+function gothere(){
+		board[cplayer.xpos][cplayer.ypos]=".";
+		cplayer.xpos=portals[rnbl].xpos; cplayer.ypos=portals[rnbl].ypos;
+		removepopup();
+		game();
+}
+
+//library chest
+function digit(nb,change){
+	chest="";
+	codem="";
+	c[nb-1]+=change;
+	if(c[nb-1]>=10){
+	c[nb-1]=0;
+	}else if(c[nb-1]<=0){
+	c[nb-1]=9;
+	}
+	codem=codem.concat(c[0]+" "+c[1]+" "+c[2]);
+	if(puzzle[0]==false && c[0]==code[0] && c[1]==code[1] && c[2]==code[2]){
 		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a knight helmet as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
 		document.getElementById("chestmessage").innerHTML = chest;
+		var cnt=0;
+		while(cnt<cplayer.inventory.length && cplayer.inventory[cnt]!="."){
+			cnt++;
+		}
+		cplayer.inventory[cnt]="h";
+		puzzle[0]=true;
+		dispinfo();
 	}
-	document.getElementById("codeenter").innerHTML = code;
+	document.getElementById("codeenter").innerHTML = codem;
 }
 
 //potion chest
 function changecolor(nb){
 	var colors=["red", "blue", "green"];
 	var colorbox="box"+nb;
-	var pcolors=[pcolor1, pcolor2, pcolor3];
-	pcolors[nb - 1] = (pcolors[nb - 1] + 1) % 3;
-	document.getElementById(colorbox).style.backgroundColor = colors[pcolors[nb - 1]];pcolor1 = pcolors[0];
-	pcolor1 = pcolors[0];
-	pcolor2 = pcolors[1];
-	pcolor3 = pcolors[2];
+	pcolor[nb - 1] = (pcolor[nb - 1] + 1) % 3;
+	document.getElementById(colorbox).style.backgroundColor = colors[pcolor[nb - 1]];
 	givepotion();
 }
 
 function givepotion(){
+	if(puzzle[2]==false){
 	chest="";
 	for(var i=0; i<cplayer.inventory.length; i++){
 		if(cplayer.inventory[i]=="*"){
@@ -113,64 +163,64 @@ function givepotion(){
 	}else{
 		chest=chest.concat("please give me a potion for the spell to work");
 	}
-	if(potioncolor1==pcolor1 && potioncolor2==pcolor2 && potioncolor3==pcolor3 && gotpotion){
+	if(puzzle[2]==false && potioncolor[0]==pcolor[0] && potioncolor[1]==pcolor[1] && potioncolor[2]==pcolor[2] && gotpotion){
 		chest=chest.concat("Congratulation you have solved this puzzle!<br>As a reward you get 2 batteries");	
+		puzzle[2]=true;
+		var gotbat=2;
+		if(bat<3){
+			bat+=gotbat;
+			gotbat=0;
+			if(bat>3){
+				bat=3;gotbat=1;
+			}
+		}while(gotbat>0){
+			var cnt=0;
+			while(cnt<cplayer.inventory.length && cplayer.inventory[cnt]!="."){
+				cnt++;
+			}
+			cplayer.inventory[cnt]="$";
+			gotbat--;
+		}
 	}else if(gotpotion){
 		chest=chest.concat("great now just select the correct colors to activate the potion");
 	}
 	document.getElementById("chestmessage").innerHTML=chest;
+	dispinfo();
+	}
 }
 
 
 //mirror room
-function movemirrorup(nb){
+function movemirror(nb, x, y){
+	if(puzzle[4]==false){
 	chest="";
-	var m=window["mirror" + nb];
-	if(board[m.xpos][m.ypos-1]=="." || board[m.xpos][m.ypos-1]=="-"){
-	board[m.xpos][m.ypos]=".";
-	m.ypos--;
+	if(board[mirrors[nb-1].xpos+x][mirrors[nb-1].ypos+y]=="." || board[mirrors[nb-1].xpos+x][mirrors[nb-1].ypos+y]=="-"){
+	board[mirrors[nb-1].xpos][mirrors[nb-1].ypos]=".";
+	mirrors[nb-1].xpos+=x;
+	mirrors[nb-1].ypos+=y;
 	showboard();
 	}else{
 		chest=chest.concat("The mirror has hit something");
-		document.getElementById("chestmessage").innerHTML=chest;
 	}
-}
-function movemirrorleft(nb){
-	chest="";
-	var m=window["mirror" + nb];
-	if(board[m.xpos-1][m.ypos]=="." || board[m.xpos-1][m.ypos]=="-"){
-	board[m.xpos][m.ypos]=".";
-	m.xpos--;
-	showboard();
+	//checkwin
+	if(mirrors[0].ypos==mirrors[1].ypos){
+		chest="";
+		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received knight armor boots as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
+		var cnt=0;
+		while(cnt<cplayer.inventory.length && cplayer.inventory[cnt]!="."){
+			cnt++;
+		}
+		cplayer.inventory[cnt]="s";
+		puzzle[4]=true;
+		dispinfo();
+	}
 	}else{
-		chest=chest.concat("The mirror has hit something");
-		document.getElementById("chestmessage").innerHTML=chest;
+		chest="";
+		chest=chest.concat("puzzle complete");
 	}
+	document.getElementById("chestmessage").innerHTML=chest;
 }
-function movemirrorright(nb){
-	chest="";
-	var m=window["mirror" + nb];
-	if(board[m.xpos+1][m.ypos]=="." || board[m.xpos+1][m.ypos]=="-"){
-	board[m.xpos][m.ypos]=".";
-	m.xpos++;
-	showboard();
-	}else{
-		chest=chest.concat("The mirror has hit something");
-		document.getElementById("chestmessage").innerHTML=chest;
-	}
-}
-function movemirrordown(nb){
-	chest="";
-	var m=window["mirror" + nb];
-	if(board[m.xpos][m.ypos+1]=="." || board[m.xpos][m.ypos+1]=="-"){
-	board[m.xpos][m.ypos]=".";
-	m.ypos++;
-	showboard();
-	}else{
-		chest=chest.concat("The mirror has hit something");
-		document.getElementById("chestmessage").innerHTML=chest;
-	}
-}
+
 
 //kitchen chest
 function showsoup(){
@@ -190,10 +240,17 @@ function showsoup(){
 	}
 }
 function dispexpla(){
-	showplate="";
-	chest="";
-	chest=chest.concat("Use the arrow keys to put the ingridients in order.<br> Each row should be only one type of food.");
-	document.getElementById("chestmessage").innerHTML = chest;
+	if(puzzle[3]==false){
+		showplate="";
+		chest="";
+		chest=chest.concat("Use the arrow keys to put the ingridients in order.<br> Each row should be only one type of food.");
+		document.getElementById("chestmessage").innerHTML = chest;
+	}else{
+		chest="";
+		chest=chest.concat("puzzle complete");
+		document.getElementById("chestmessage").innerHTML = chest;
+		
+	}
 }
 
 function cookmove(dir,rowcol){
@@ -219,14 +276,38 @@ function cookmove(dir,rowcol){
 	}
 	showsoup();
 	//checkwin
+	if(puzzle[3]==false){
 	var cnt=0;
+	var colcnt=0;
 	for(var i=0; i<3; i++){
-		if(soup[i][0]==soup[i][1] && soup[i][2]==soup[i][2]){
+		if(soup[i][0]==soup[i][1] && soup[i][2]==soup[i][1]){
 			cnt++;
 		}
+	}// Check whether every COLUMN contains only one symbol
+	for(var j=0; j<3; j++){
+   		if(soup[0][j]==soup[1][j] && soup[2][j]==soup[1][j]){
+        		colcnt++;
+    		}
 	}if(cnt==3){
 		chest="";
 		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received knight armor pants as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
 		document.getElementById("chestmessage").innerHTML = chest;
+		var cnt=0;
+		while(cnt<cplayer.inventory.length && cplayer.inventory[cnt]!="."){
+			cnt++;
+		}
+		cplayer.inventory[cnt]="p";
+		puzzle[3]=true;
+		dispinfo();
+	}else if(colcnt==3){
+		chest="";
+		chest=chest.concat("Please sort by rows not columns");
+		document.getElementById("chestmessage").innerHTML = chest;
+	}
+	}else{
+		chest="";
+		chest=chest.concat("puzzle complete");
+		document.getElementById("chestmessage").innerHTML = chest;
+		
 	}
 }

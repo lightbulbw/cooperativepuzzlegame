@@ -204,13 +204,13 @@ body{
 		</center>
 		<div id="]1" style="display:none;">
 			
-			<button onclick="updigit(1)">/\</button>
-			<button onclick="updigit(2)">/\</button>
-			<button onclick="updigit(3)">/\</button><br>
+			<button onclick="digit(1,1)">/\</button>
+			<button onclick="digit(2,1)">/\</button>
+			<button onclick="digit(3,1)">/\</button><br>
 			<div id="codeenter"></div>
-			<button onclick="downdigit(1)">\/</button>
-			<button onclick="downdigit(2)">\/</button>
-			<button onclick="downdigit(3)">\/</button>
+			<button onclick="digit(1,-1)">\/</button>
+			<button onclick="digit(2,-1)">\/</button>
+			<button onclick="digit(3,-1)">\/</button>
 		</div>
 		<div id="]2" style="display:none;">
 			<button id="box1" onclick="changecolor(1)"></button>
@@ -301,28 +301,34 @@ body{
 			</center>
 		</div>
 		<div id="m1" style="display:none;">
-			<button onclick="movemirrorup(1)">/\</button><br>
-			<button onclick="movemirrorleft(1)">&lt;</button>
+			<button onclick="movemirror(1,0,-1)">/\</button><br>
+			<button onclick="movemirror(1,-1,0)">&lt;</button>
 			<font style="font-size:50px;">&#129694;</font>
-			<button onclick="movemirrorright(1)">&gt;</button><br>
-			<button onclick="movemirrordown(1)">\/</button>
+			<button onclick="movemirror(1,1,0)">&gt;</button><br>
+			<button onclick="movemirror(1,0,1)">\/</button>
 		</div>
 		<div id="m2" style="display:none;">
-			<button onclick="movemirrorup(2)">/\</button><br>
-			<button onclick="movemirrorleft(2)">&lt;</button>
+			<button onclick="movemirror(2,0,-1)">/\</button><br>
+			<button onclick="movemirror(2,-1,0)">&lt;</button>
 			<font style="font-size:50px;">&#129694;</font>
-			<button onclick="movemirrorright(2)">&gt;</button><br>
-			<button onclick="movemirrordown(2)">\/</button>
+			<button onclick="movemirror(2,1,0)">&gt;</button><br>
+			<button onclick="movemirror(2,0,1)">\/</button>
 		</div>
 		
-		<div id="0" style="display:none;">0</div>
-		<div id="p" style="display:none;">Congratulations you solved this puzzle!<br> You have received a knight chest plate as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked</div>
+		<div id="0" style="display:none;">
+			<button onclick="gothere();">Go There</button>
+		</div>
+		<div id="p" style="display:none;"></div>
+		<div id="T" style="display:none;"></div>
+		<div id="lost" style="display:none;"></div>
+		
+		<button id="playagain" style="display:none;" onclick="restart()">Play Again</button>
 	</div>
 </div>
 </center>
 <center>
 <h1 class="title">Escape The Haunted Castle<br><font style="font-size:20px;">Cooperative Escape Room</font></h1>
-<div id="message">&#128123; To escape you have to solve puzzles and reassemble the knight armor</div>
+<div id="message"></div>
 </center>
 <div class="container">
 	<div id="sidebar">
@@ -347,7 +353,7 @@ body{
 
 <script>
 //main
-disppinfo();
+dispinfo();
 populateboard();
 game();
 </script>
