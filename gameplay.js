@@ -637,8 +637,13 @@ function checkobstacle(nextx, nexty){
 		cplayer.inventory[cnt]="*";
 	}
 	else if(board[nextx][nexty]=="m"){
-		chest="The Mirror room has no entrance.<br>If you dare enter you must move the mirrors such that they look at each other.<br>This will break the spell and help you restore the moon phases for the castle knight<br>";
+		if(puzzle[4]==false){
+			chest="The Mirror room has no entrance.<br>If you dare enter you must move the mirrors such that they look at each other.<br>This will break the spell and help you restore the moon phases for the castle knight<br>";
+		}else{
+			chest="puzzle complete";
+		}
 		document.getElementById("chestmessage").innerHTML = chest;
+		
 		if(nexty==mirrors[0].ypos && nextx==mirrors[0].xpos){
 			custompopup("m1");
 		}else{
