@@ -20,16 +20,16 @@ O and be careful! There are rats(&#128000;).
 
 <br><br><br>
 ====Fancais=======<br>
-√âchappez du Ch√¢teau Hant√©, une Salle d'√âvasion Coop√©rative<br>
-Un jeu de r√©flexion coop√©ratif √† 2 joueurs<br>
+…chappez du Ch‚teau HantÈ, une Salle d'…vasion CoopÈrative<br>
+Un jeu de rÈflexion coopÈratif ‡ 2 joueurs<br>
 
-Deux amis (joueur 1 et joueur 2) explorent un ch√¢teau lorsque soudain un vent √©teint les lumi√†res.
-Pour √©chapper, vous devez les aider √† r√©soudre des √©nigmes et apporter les phases de la lune au chevalier √† l'entr√©e avant que la batterie de leur lampe de poche ne s'√©puise. La seule et unique lampe de poche que vous avez se d√©charge par la magie du ch√¢teau chaque fois qu'un joueur se d√©place, car c'est une technologie du futur. Alors, fait vite! Vous pouvez obtenir 2 piles suppl√©mentaires en r√©solvant l'√©nigme de la salle des potions, mais est-ce que cela suffira? Vous pouvez vous d√©placer en utilisant les fl√®ches directionnelles ou les touches w-a-s-d ou h-j-k-l.<br><br>
-Il y a 4 salles et un couloir, chacune a une √©nigme. Descriptions des √©nigmes:<br>
-Biblioth√®que:Trouvez le code √©crit en UV et entrez-le dans le cadenas num√©rique du coffre(&#128230;)<br>
+Deux amis (joueur 1 et joueur 2) explorent un ch‚teau lorsque soudain un vent Èteint les lumiËres.
+Pour Èchapper, vous devez les aider ‡† rÈsoudre des Ènigmes et apporter les phases de la lune au chevalier √† l'entrÈe avant que la batterie de leur lampe de poche ne s'Èpuise. La seule et unique lampe de poche que vous avez se dÈcharge par la magie du ch‚teau chaque fois qu'un joueur se dÈplace, car c'est une technologie du futur. Alors, fait vite! Vous pouvez obtenir 2 piles supplÈmentaires en rÈsolvant l'Ènigme de la salle des potions, mais est-ce que cela suffira? Vous pouvez vous dÈplacer en utilisant les flËches directionnelles ou les touches w-a-s-d ou h-j-k-l.<br><br>
+Il y a 4 salles et un couloir, chacune a une Ènigme. Descriptions des Ènigmes:<br>
+BibliothËque:Trouvez le code Ècrit en UV et entrez-le dans le cadenas numÈrique du coffre(&#128230;)<br>
 Salle des potions:Trouvez une potion(&#129514;) et entrez une combinaison de couleurs dans le chaudron(&#9879;&#65039;)<br>
-Cuisine:Trouvez un coffre(&#128230;) et r√©soudre un Rubik's cube 2D<br>
-La salle des miroirs:elle n'a pas d'entr√©e. Si vous osez entrer, vous devez d√©placer les miroirs(&#129694;) de mani√®re ‡ ce qu'ils se regardent.<br>
-Couloir:Il y a 2 plaques de pression(&#128062;) qui doivent √™tre activ√©es simultan√©ment. Cependant, leurs emplacements ainsi que les pi√®ges(&#9760;) ne sont marqu√©s qu'en UV.<br><br>
-Pour restaurer la sant√© des joueur, allez √† la cuisine et ramassez de la nourriture. Cependant, il n'y a au total que 3 pommes(&#127822;) alors ne gaspillez pas vos c\u0153ur.<br><br>
-Pouvez-vous les aider √† sortir √† temps ? Et fais attention! Il y a des rats(&#128000;).
+Cuisine:Trouvez un coffre(&#128230;) et rÈsoudre un Rubik's cube 2D<br>
+La salle des miroirs:elle n'a pas d'entrÈe. Si vous osez entrer, vous devez dÈplacer les miroirs(&#129694;) de maniÈre ‡ ce qu'ils se regardent.<br>
+Couloir:Il y a 2 plaques de pression(&#128062;) qui doivent Ítre activÈes simultanÈment. Cependant, leurs emplacements ainsi que les piËges(&#9760;) ne sont marquÈs qu'en UV.<br><br>
+Pour restaurer la santÈ des joueurs, allez ‡† la cuisine et ramassez de la nourriture. Cependant, il n'y a au total que 3 pommes(&#127822;) alors ne gaspillez pas vos coeur.<br><br>
+Pouvez-vous les aider ‡† sortir ‡† temps? Et fais attention! Il y a des rats(&#128000;).
