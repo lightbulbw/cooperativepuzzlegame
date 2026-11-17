@@ -19,7 +19,7 @@ Can you help them get out on time?<br>
 O and be careful! There are rats(&#128000;).
 
 <br><br><br>
-====Fancais=======<br>
+====Français=======<br>
 Échappez du Château Hanté, une Salle d'Évasion Coopérative<br>
 Un jeu de réflexion coopératif à 2 joueurs<br>
 
