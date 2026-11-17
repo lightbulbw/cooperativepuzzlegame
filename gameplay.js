@@ -11,7 +11,7 @@ var player1={
   nbpuzzlesol:0,
   xpos:3,
   ypos:3,
-  inventory:[".",".",".",".",".",".",".","."]
+  inventory:[".",".",".",".",".",".",".",".","."]
 };
 var player2={
   ability:"go through thin walls",
@@ -19,14 +19,14 @@ var player2={
   nbpuzzlesol:0,
   xpos:xlength-4,
   ypos:ylength-4,
-  inventory:[".",".",".",".",".",".",".","."]
+  inventory:[".",".",".",".",".",".",".",".","."]
 };
 var cp=1;//current player
 var cplayer=player1;
-//armor stand
+//armor stand aka knight
 var as={
 xpos:1,
-ypos:Math.floor(ylength/2)-1
+ypos:Math.floor(ylength/3)+1
 }
 //pressure plates
 var ptiles=[
@@ -61,9 +61,9 @@ var portals=[
 ];
 
 var chests=[
-	{xpos:xlength-16,ypos:1},
-	{xpos:xlength-2,ypos:ylength-9}, 
-	{xpos:xlength-14,ypos:ylength-2}  
+	{xpos:Math.floor(xlength/2)+4,ypos:1},
+	{xpos:xlength-2,ypos:Math.floor(ylength/3)+1}, 
+	{xpos:Math.floor(xlength/2)+6,ypos:ylength-2}  
 ];
 
 var potion1={
@@ -95,6 +95,7 @@ var soup=[
 ]
 
 var bat=3;//shared resource
+var stepcnt=0;
 
 var sidebartxt="";
 var dispboard="";
@@ -103,9 +104,10 @@ var booktext="";
 var chest="";
 var codem="";
 var showplate="";
+var place="";
 
 function restart(){
-	console.log("restart");
+	//console.log("restart");
 	hideshow(false,"playagain");
 	removepopup();
 	cp=1;
@@ -172,17 +174,20 @@ function restart(){
 	chest="";
 	codem="";
 	showplate="";
+	place="";
 	document.getElementById("light").innerHTML = sidebartxt;
 	document.getElementById("thegame").innerHTML = dispboard;
 	document.getElementById("message").innerHTML = message;
 	document.getElementById("chestmessage").innerHTML = chest;
+	document.getElementById("place").innerHTML = place;
 
 	populateboard();
 	showboard();
 	dispinfo();
 }
 function instruct(){
-	console.log("instructions");
+	document.getElementById("mypopup").style.backgroundColor = "crimson";
+	custompopup("instructions");
 }
 function dispinfo(){
 	sidebartxt="";
@@ -197,18 +202,28 @@ function dispinfo(){
 	sidebartxt=sidebartxt.concat("inventory:<br>");
 	for(var i=0; i<cplayer.inventory.length; i++){
 		if(cplayer.inventory[i]=="*"){
-			sidebartxt=sidebartxt.concat("&#129514;");
+			sidebartxt=sidebartxt.concat("<font style='background-color:blue;'>&#129514;</font>");
 		}else if(cplayer.inventory[i]=="f"){
-			sidebartxt=sidebartxt.concat("&#127822;");
+			sidebartxt=sidebartxt.concat("<font style='background-color:blue;'>&#127822;</font>");
+		}else if(cplayer.inventory[i]=="$"){
+			sidebartxt=sidebartxt.concat("<font style='background-color:blue;'>&#128267;</font>");
+		}else if(cplayer.inventory[i]=="h"){
+			sidebartxt=sidebartxt.concat("<font style='background-color:blue;'>&#127762;</font>");
+		}else if(cplayer.inventory[i]=="c"){
+			sidebartxt=sidebartxt.concat("<font style='background-color:blue;'>&#127764;</font>");
+		}else if(cplayer.inventory[i]=="p"){
+			sidebartxt=sidebartxt.concat("<font style='background-color:blue;'>&#127766;</font>");
+		}else if(cplayer.inventory[i]=="s"){
+			sidebartxt=sidebartxt.concat("<font style='background-color:blue;'>&#127768;</font>");
 		}else{
-			sidebartxt=sidebartxt.concat("&nbsp;"+cplayer.inventory[i]);
+			sidebartxt=sidebartxt.concat("<font style='background-color:blue;'>&nbsp;"+cplayer.inventory[i]+"</font>");
 		}
 	}
 	document.getElementById("light").innerHTML = sidebartxt;
 	
 }
 function changep(){
-	console.log("changeplayer fct");
+	//console.log("changeplayer fct");
 	if(cp==1){
 		cp=2;
 		cplayer=player2;
@@ -216,34 +231,36 @@ function changep(){
 		cp=1;
 		cplayer=player1;
 	}
+	message="&#128123;";
+	roomdescr(cplayer.xpos,cplayer.ypos);
 	game();
 }
 
 function drawwalls(){
 	//walls
 	for(var i=0; i<xlength; i++){
-		if(i<xlength-15){
-			board[i][ylength-6]="=";
-			board[i][ylength-10]="=";
-		}else if(i>xlength-15){
-			board[i][ylength-8]="=";
+		if(i<Math.floor(2*xlength/3)-1){
+			board[i][Math.floor(2*ylength/3)-1]="=";
+			board[i][Math.floor(2*ylength/3)-5]="=";
+		}else if(i>Math.floor(xlength/3)-1){
+			board[i][Math.floor(2*ylength/3)-3]="=";
 		}
 		board[i][0]="#";
 		board[i][ylength-1]="#";
 	}
 	for(var j=0; j<ylength; j++){
-		if(board[xlength-15][j]=="."){
-		board[xlength-15][j]="=";
+		if(board[Math.floor(2*xlength/3)-1][j]=="."){
+		board[Math.floor(2*xlength/3)-1][j]="=";
 		}
 		board[0][j]="#";
 		board[xlength-1][j]="#";
 	}
 	board[0][Math.floor(ylength/2)]="|";//exit
 	//open doors
-	board[xlength-17][Math.floor(ylength-10)]=".";
-	board[xlength-16][Math.floor(ylength-10)]=".";
-	board[xlength-15][Math.floor(ylength-9)]=".";
-	board[xlength-15][Math.floor(ylength-7)]=".";
+	board[Math.floor(2*xlength/3)-3][Math.floor(2*ylength/3)-5]=".";
+	board[Math.floor(2*xlength/3)-2][Math.floor(2*ylength/3)-5]=".";
+	board[Math.floor(2*xlength/3)-1][Math.floor(2*ylength/3)-4]=".";
+	board[Math.floor(2*xlength/3)-1][Math.floor(2*ylength/3)-2]=".";
 }
 
 function randomposgen(range, offset){
@@ -252,7 +269,7 @@ function randomposgen(range, offset){
 }
 
 function populateboard(){
-	message=message.concat("To escape you have to solve puzzles and reassemble the knight armor");
+	message=message.concat("Two friends(player1 and player 2) explore a castle when suddently the lights are blown out.<br>To escape you have to help them solve puzzles and bring the moon phases to the knight at the entrance before their flashlight battery runs out.<br>(move around using arrow keys or w-a-s-d or h-j-k-l)");
 	document.getElementById("message").innerHTML = message;
 	for(var i=0; i<xlength; i++){
 		board[i]=[];
@@ -311,7 +328,7 @@ function populateboard(){
 			mirrors[i].xpos=randomposgen(10, 1);
 			mirrors[i].ypos=randomposgen(2, ylength-3);
 			}else{
-			mirrors[i].xpos=randomposgen(10, 11);
+			mirrors[i].xpos=randomposgen(10, 13);
 			mirrors[i].ypos=randomposgen(2, ylength-5);
 			}	
 		}
@@ -344,7 +361,7 @@ function populateboard(){
 	board[potion1.xpos][potion1.ypos]="*";
 	
 	while(board[potionbook.xpos][potionbook.ypos]!="."){
-		potionbook.xpos = randomposgen(10,30);
+		potionbook.xpos = randomposgen(10,xlength-10);
 		potionbook.ypos = randomposgen(6,1);
 	}
 	board[potionbook.xpos][potionbook.ypos]="b";
@@ -375,7 +392,7 @@ function populateboard(){
 	//food
 	for(var i=0;i<food.length; i++){
 		while(board[food[i].xpos][food[i].ypos]!="."){
-			food[i].xpos=randomposgen(14, xlength-14);
+			food[i].xpos=randomposgen(14, Math.floor(2*xlength/3));
 			food[i].ypos=randomposgen(7, ylength-7);
 		}
 		board[food[i].xpos][food[i].ypos]="f";
@@ -398,6 +415,7 @@ function populateboard(){
 		}
 	}
 }
+
 function showboard(){
 	dispboard="";
 	drawwalls();
@@ -447,58 +465,74 @@ function showboard(){
 	board[player2.xpos][player2.ypos]="2";
 	for(var j=0; j<ylength; j++){
 		for(var i=0; i<xlength; i++){
-			if(board[i][j]=="]" && i==chests[1].xpos && j==chests[1].ypos){
-			dispboard=dispboard.concat("<font size=5px>&#9879;&#65039;</font>");
-			}else if(board[i][j]=="]"){
-			dispboard=dispboard.concat("<font size=5px>&#128230;</font>");
-			}else if(board[i][j]=="0"){
-			dispboard=dispboard.concat("<font size=5px>&#10024;</font>");
-			}else if(board[i][j]=="p"){
-			dispboard=dispboard.concat("<font size=5px>&#128062;</font>");
-			}else if(board[i][j]=="m"){
-			dispboard=dispboard.concat("<font size=5px>&#129694;</font>");
-			}else if(board[i][j]=="x"){
-			dispboard=dispboard.concat("<font size=5px>&#9760;</font>");
-			}else if((board[i][j]=="b" || board[i][j]=="B") && j==books[3].ypos){
-			dispboard=dispboard.concat("<font size=5px>&#128217;</font>");
-			}else if((board[i][j]=="b" || board[i][j]=="B") && j==books[2].ypos){
-			dispboard=dispboard.concat("<font size=5px>&#128216;</font>");
-			}else if((board[i][j]=="b" || board[i][j]=="B") && j==books[1].ypos){
-			dispboard=dispboard.concat("<font size=5px>&#128215;</font>");
-			}else if((board[i][j]=="b" || board[i][j]=="B") && j==books[0].ypos){
-			dispboard=dispboard.concat("<font size=5px>&#128213;</font>");
-			}else if(board[i][j]=="b"){
-			dispboard=dispboard.concat("<font size=5px>&#128213;</font>");
-			}else if(board[i][j]=="*"){
-				var potion="&#129514;";
-				var ctx=document.createElement("canvas").getContext("2d");
-				if(ctx){
-				ctx.fillText("\uD83E\uDDEA", 0, 10);
-				if(ctx.getImageData(0, 0, 12, 12).data.indexOf(255)==-1){
-					potion="&#127863;";//fallback
-				}
-				}
-				dispboard=dispboard.concat("<font size=5px>"+potion+"</font>");
-			}else if(board[i][j]=="f"){
-				dispboard=dispboard.concat("<font size=5px>&#127822;</font>");
-			}else if(board[i][j]=="r"){
-				dispboard=dispboard.concat("<font size=5px>&#128000;</font>");
+			//if not illumnated then black else show board content
+			if(!(board[i][j]=="#" || board[i][j]=="=" || (i==cplayer.xpos && j==cplayer.ypos) || (i==cplayer.xpos+1 && j==cplayer.ypos) || (i==cplayer.xpos-1 && j==cplayer.ypos) || (i==cplayer.xpos && j==cplayer.ypos+1) || (i==cplayer.xpos && j==cplayer.ypos-1))){
+				dispboard = dispboard.concat("<span>&#9632;</span>");
 			}else{
-				dispboard=dispboard.concat("<font size=6px, color=white>",board[i][j],"</font>");
+				if(board[i][j]=="]" && i==chests[1].xpos && j==chests[1].ypos){
+					dispboard=dispboard.concat("<span>&#9879;&#65039;</span>");
+				}else if(board[i][j]=="]"){
+					dispboard=dispboard.concat("<span>&#128230;</span>");
+				}else if(board[i][j]=="T"){
+					dispboard=dispboard.concat("<span>&#9820;</span>");
+				}else if(board[i][j]=="0"){
+					dispboard=dispboard.concat("<span>&#10024;</span>");
+				}else if(board[i][j]=="p"){
+					dispboard=dispboard.concat("<span>&#128062;</span>");
+				}else if(board[i][j]=="m"){
+					dispboard=dispboard.concat("<span>&#129694;</span>");
+				}else if(board[i][j]=="x"){
+					dispboard=dispboard.concat("<span>&#9760;</span>");
+				}else if((board[i][j]=="b" || board[i][j]=="B") && j==books[3].ypos){
+					dispboard=dispboard.concat("<span>&#128217;</span>");
+				}else if((board[i][j]=="b" || board[i][j]=="B") && j==books[2].ypos){
+					dispboard=dispboard.concat("<span>&#128216;</span>");
+				}else if((board[i][j]=="b" || board[i][j]=="B") && j==books[1].ypos){
+					dispboard=dispboard.concat("<span>&#128215;</span>");
+				}else if((board[i][j]=="b" || board[i][j]=="B") && j==books[0].ypos){
+					dispboard=dispboard.concat("<span>&#128213;</span>");
+				}else if(board[i][j]=="b"){
+					dispboard=dispboard.concat("<span>&#128213;</span>");
+				}else if(board[i][j]=="*"){
+					var potion="&#129514;";
+					var ctx=document.createElement("canvas").getContext("2d");
+					if(ctx){
+						ctx.fillText("\uD83E\uDDEA", 0, 10);
+						if(ctx.getImageData(0, 0, 12, 12).data.indexOf(255)==-1){
+							potion="&#127863;";//fallback
+						}
+					}
+					dispboard=dispboard.concat("<span>"+potion+"</span>");
+				}else if(board[i][j]=="f"){
+					dispboard=dispboard.concat("<span>&#127822;</span>");
+				}else if(board[i][j]=="r"){
+					dispboard=dispboard.concat("<span>&#128000;</span>");
+				}else{
+					dispboard=dispboard.concat("<span style='color:white;'>",board[i][j],"</span>");
+				}
 			}
 		}
 		dispboard=dispboard.concat("<br>");
 	}
 	document.getElementById("thegame").innerHTML = dispboard;
+	//document.getElementById("thegame").style.setProperty("--columns", xlength);
+	document.getElementById("thegame").style.fontSize=Math.min(window.innerWidth*0.05, window.innerWidth*1.25/(xlength*1.2))+"px";
 }
-
+window.addEventListener("resize", function() {
+    document.getElementById("thegame").style.fontSize =
+        Math.min(window.innerWidth*0.05,window.innerWidth*1.25/(xlength*1.2))+"px";
+});
 
 function checkobstacle(nextx, nexty){
 	if(board[nextx][nexty]=="]" && nextx==chests[0].xpos){
 		if(puzzle[0]==true){
-		chest="";
-		chest=chest.concat("puzzle complete");
-		document.getElementById("chestmessage").innerHTML = chest;
+			chest="";
+			chest=chest.concat("puzzle complete");
+			document.getElementById("chestmessage").innerHTML = chest;
+		}else{
+			chest="";
+			chest=chest.concat("use the buttons to enter the code");
+			document.getElementById("chestmessage").innerHTML = chest;
 		}
 		custompopup("]1");
 		codem="";
@@ -518,9 +552,6 @@ function checkobstacle(nextx, nexty){
 		custompopup("]3");
 		showsoup();
 		dispexpla();
-	}else if(board[nextx][nexty]=="T"){
-		custompopup("T");
-		theknight();
 	}else if(board[nextx][nexty]=="b"){
 		custompopup("b");
 		if(nextx==potionbook.xpos && nexty==potionbook.ypos){
@@ -581,7 +612,7 @@ function checkobstacle(nextx, nexty){
 			custompopup("p");
 			if(puzzle[1]==false){
 				chest="";
-				chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a knight chest plate as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
+				chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a Waxing gibbous moon as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
 				document.getElementById("chestmessage").innerHTML = chest;
 		
 				var cnt=0;
@@ -606,6 +637,8 @@ function checkobstacle(nextx, nexty){
 		cplayer.inventory[cnt]="*";
 	}
 	else if(board[nextx][nexty]=="m"){
+		chest="The Mirror room has no entrance.<br>If you dare enter you must move the mirrors such that they look at each other.<br>This will break the spell and help you restore the moon phases for the castle knight<br>";
+		document.getElementById("chestmessage").innerHTML = chest;
 		if(nexty==mirrors[0].ypos && nextx==mirrors[0].xpos){
 			custompopup("m1");
 		}else{
@@ -642,20 +675,56 @@ function checkobstacle(nextx, nexty){
 }
 
 function roomdescr(nextx,nexty){
-	message="&#128123;";
-	if(nextx<xlength-14 && nexty>ylength-7){
-	message=message.concat("The Mirror room has no entrance.<br>If you dare enter you must move the mirrors such that they look at each other.<br>This will break the spell and help you restor the knight armor");
-	}else if(nextx<xlength-14 && nexty<ylength-6 && nexty>ylength-10){
-	message=message.concat("The corridor has 2 pressure plates that if simultaniously activated will help you restor the knight armor. <br>However, their locations are only marked in UV.<br>Also becareful there are traps!");
+	place="";
+	if(nextx<Math.floor(2*xlength/3) && nexty>ylength-7){
+	place=place.concat("The Mirror room has no entrance.<br>If you dare enter you must move the mirrors such that they look at each other.<br>This will break the spell and help you restore the moon phases for the castle knight<br>");
+	}else if(nextx<Math.floor(2*xlength/3) && nexty<ylength-6 && nexty>ylength-10){
+	place=place.concat("The corridor has 2 pressure plates that if simultaniously activated will help you restore the moon phases for the castle knight. <br>However, their locations are only marked in UV.<br>Also becareful there are traps!<br>");
+	}else if(nextx>Math.floor(2*xlength/3)-1 && nexty<ylength-7){
+		place=place.concat("You are in the Potion room<br>");
+	}else if(nextx>Math.floor(2*xlength/3)-1 && nexty>ylength-8){
+		place=place.concat("You are in the Kitchen<br>");
+	}else if(nextx<Math.floor(2*xlength/3)-1 && nexty<Math.floor(2*ylength/3)-5){
+		place=place.concat("You are in the Library<br>");
 	}
-	document.getElementById("message").innerHTML = message;
+	document.getElementById("place").innerHTML = place;
+}
+
+function batdrain(){
+	stepcnt++;
+	if(stepcnt>=50){
+		stepcnt=0;
+		var yes=false;
+		for(var i=0; i<player1.inventory.length; i++){
+			if(player1.inventory[i]=="$"){
+				yes=true;
+				player1.inventory[i]="."; 
+				break;
+			}
+		}
+		if(!yes){
+			for(var i=0; i<player2.inventory.length; i++){
+				if(player2.inventory[i]=="$"){
+					yes=true;
+					player2.inventory[i]="."; 
+					break;
+				}
+			}if(!yes){
+				bat--;
+			}
+		}
+	}
 }
 
 function moveup(){
 	if(!freeze){
+	if(board[cplayer.xpos][cplayer.ypos-1]=="T"){
+		custompopup("T");
+		theknight();
+	}else{
 		message="&#128123;";
-		checkobstacle(cplayer.xpos,cplayer.ypos-1);
 		roomdescr(cplayer.xpos,cplayer.ypos-1);
+		checkobstacle(cplayer.xpos,cplayer.ypos-1);
 		if(board[cplayer.xpos][cplayer.ypos-1]=="#"){
 			message=message.concat("you have hit a wall");
 		}else if(cplayer.ability!="go through thin walls" && board[cplayer.xpos][cplayer.ypos-1]=="="){
@@ -663,16 +732,22 @@ function moveup(){
 		}else{
 			board[cplayer.xpos][cplayer.ypos]=".";
 			cplayer.ypos--;
+			batdrain();
 			game();
 		}
 		document.getElementById("message").innerHTML = message;
 	}
+	}
 }
 function moveleft(){
 	if(!freeze){
+	if(board[cplayer.xpos-1][cplayer.ypos]=="T"){
+		custompopup("T");
+		theknight();
+	}else{
 		message="&#128123;";
-		checkobstacle(cplayer.xpos-1,cplayer.ypos);
 		roomdescr(cplayer.xpos-1,cplayer.ypos);
+		checkobstacle(cplayer.xpos-1,cplayer.ypos);
 		if(board[cplayer.xpos-1][cplayer.ypos]=="#"){
 			message=message.concat("you have hit a wall");
 		}else if(board[cplayer.xpos-1][cplayer.ypos]=="|"){
@@ -682,16 +757,22 @@ function moveleft(){
 		}else{
 			board[cplayer.xpos][cplayer.ypos]=".";
 			cplayer.xpos--;
+			batdrain();
 			game();
 		}
 		document.getElementById("message").innerHTML = message;
 	}
+	}
 }
 function moveright(){
 	if(!freeze){
+	if(board[cplayer.xpos+1][cplayer.ypos]=="T"){
+		custompopup("T");
+		theknight();
+	}else{
 		message="&#128123;";
-		checkobstacle(cplayer.xpos+1,cplayer.ypos);
 		roomdescr(cplayer.xpos+1,cplayer.ypos);
+		checkobstacle(cplayer.xpos+1,cplayer.ypos);
 		if(board[cplayer.xpos+1][cplayer.ypos]=="#"){
 			message=message.concat("you have hit a wall");
 		}else if(cplayer.ability!="go through thin walls" && board[cplayer.xpos+1][cplayer.ypos]=="="){
@@ -699,16 +780,22 @@ function moveright(){
 		}else{
 			board[cplayer.xpos][cplayer.ypos]=".";
 			cplayer.xpos++;
+			batdrain();
 			game();
 		}
 		document.getElementById("message").innerHTML = message;
 	}
+	}
 }
 function movedown(){
 	if(!freeze){
+	if(board[cplayer.xpos][cplayer.ypos+1]=="T"){
+		custompopup("T");
+		theknight();
+	}else{
 		message="&#128123;";
-		checkobstacle(cplayer.xpos,cplayer.ypos+1);
 		roomdescr(cplayer.xpos,cplayer.ypos+1);
+		checkobstacle(cplayer.xpos,cplayer.ypos+1);
 		if(board[cplayer.xpos][cplayer.ypos+1]=="#"){
 			message=message.concat("you have hit a wall");
 		}else if(cplayer.ability!="go through thin walls" && board[cplayer.xpos][cplayer.ypos+1]=="="){
@@ -716,9 +803,11 @@ function movedown(){
 		}else{
 			board[cplayer.xpos][cplayer.ypos]=".";
 			cplayer.ypos++;
+			batdrain();
 			game();
 		}
 		document.getElementById("message").innerHTML = message;
+	}
 	}
 }
 
@@ -736,9 +825,11 @@ moveright();
 if(e.keyCode==40 || e.keyCode==83 || e.keyCode==74){
 movedown();
 }
-/*if(e.keyCode==78){
-if(potions==true){usepotion();}
-}*/
+if(e.keyCode==32){//spacebar
+    e.preventDefault();
+    e.stopPropagation();
+    removepopup();
+}
 }
 //to stop scrolling with down arrow key
 window.addEventListener("keydown", function(e) {
@@ -748,14 +839,25 @@ window.addEventListener("keydown", function(e) {
     }
 }, false);
 
-
 function game(){
 	dispinfo();
 	showboard();
-	if(player1.health<=0 || player2.health<=0){
+	if(bat<3 && puzzle[2]==false){
+		message=message.concat("<br>The castle magic is draining your flashlight battery fast. Go to the potion room and solve its puzzle to get extra batteries");
+		document.getElementById("message").innerHTML = message;
+	}
+	if(player1.health<=0 || player2.health<=0 || bat<1){
+		removepopup();
 		custompopup("lost");
 		chest="";
-		chest=chest.concat("Game Over!!!");
+		chest=chest.concat("Game Over!!!<br>");
+		if(bat<1){
+			chest=chest.concat("Your flashlight batteries are all dead");
+		}else if(player1.health<=0){
+			chest=chest.concat("player1 has lost all 3 hearts");
+		}else if(player2.health<=0){
+			chest=chest.concat("player2 has lost all 3 hearts");
+		}
 		document.getElementById("chestmessage").innerHTML = chest;
 		hideshow(false,"exit");
 		hideshow(true,"playagain");

@@ -31,6 +31,9 @@ function removepopup(){
 	hideshow(false,"fireworks");
 	hideshow(false,"m1");
 	hideshow(false,"m2");
+	hideshow(false,"instructions");
+	document.getElementById("mypopup").style.backgroundColor = "yellow";
+
 }
 
 function theknight(){
@@ -72,14 +75,24 @@ function theknight(){
 		cnt++;
 	}else{
 		chest=chest.concat(".&nbsp;");
-	}if(!(gotarmor[0] && gotarmor[1] && gotarmor[2] && gotarmor[3])){
-		chest=chest.concat("<br>please give me all the armorpieces, then I will unlock the Main gate");
+	}
+	chest=chest.concat("Hi, I am the Castle Knight,");
+	if(!(gotarmor[0] && gotarmor[1] && gotarmor[2] && gotarmor[3])){
+		var done=0;
+	for(var i=0; i<puzzle.length; i++){
+		if(puzzle[i]){done++;}
+		}if(cnt<4 && done==4){
+			chest=chest.concat("<br>Thank you for the armor pieces. If the other player also brings me its collected pieces I will unlock the front gate");
+		}else{
+			chest=chest.concat("<br>please give me all the armorpieces, then I will unlock the Main gate");
+		}
 	}
 	if(cnt==4){
 		chest=chest.concat("<br><font size=8px, color=red>y</font><font size=8px, color=blue>o</font><font size=8px, color=green>u </font><font size=8px, color=orange>w</font><font size=8px, color=purple>i</font><font size=8px, color=turquise>n</font><font size=8px, color=red>!</font><font size=8px, color=orange>!</font><font size=8px, color=blue>!</font>");
 		hideshow(false,"exit");
 		hideshow(true,"playagain");
 	}
+	
 	document.getElementById("chestmessage").innerHTML = chest;
 }
 
@@ -127,7 +140,7 @@ function digit(nb,change){
 	}
 	codem=codem.concat(c[0]+" "+c[1]+" "+c[2]);
 	if(puzzle[0]==false && c[0]==code[0] && c[1]==code[1] && c[2]==code[2]){
-		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a knight helmet as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
+		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a Waxing crescent moon as a reward.<br> Bring it to the castle knight, when his moon phases are complete the main gate will be unlocked");
 		document.getElementById("chestmessage").innerHTML = chest;
 		var cnt=0;
 		while(cnt<cplayer.inventory.length && cplayer.inventory[cnt]!="."){
@@ -164,7 +177,9 @@ function givepotion(){
 		chest=chest.concat("please give me a potion for the spell to work");
 	}
 	if(puzzle[2]==false && potioncolor[0]==pcolor[0] && potioncolor[1]==pcolor[1] && potioncolor[2]==pcolor[2] && gotpotion){
-		chest=chest.concat("Congratulation you have solved this puzzle!<br>As a reward you get 2 batteries");	
+		chest=chest.concat("Congratulation you have solved this puzzle!<br>As a reward you get 2 batteries");
+		message="&#128123;";
+		document.getElementById("message").innerHTML=message;	
 		puzzle[2]=true;
 		var gotbat=2;
 		if(bat<3){
@@ -193,7 +208,7 @@ function givepotion(){
 //mirror room
 function movemirror(nb, x, y){
 	if(puzzle[4]==false){
-	chest="";
+	chest="The Mirror room has no entrance.<br>If you dare enter you must move the mirrors such that they look at each other.<br>This will break the spell and help you restore the moon phases for the castle knight<br>";
 	if(board[mirrors[nb-1].xpos+x][mirrors[nb-1].ypos+y]=="." || board[mirrors[nb-1].xpos+x][mirrors[nb-1].ypos+y]=="-"){
 	board[mirrors[nb-1].xpos][mirrors[nb-1].ypos]=".";
 	mirrors[nb-1].xpos+=x;
@@ -203,9 +218,9 @@ function movemirror(nb, x, y){
 		chest=chest.concat("The mirror has hit something");
 	}
 	//checkwin
-	if(mirrors[0].ypos==mirrors[1].ypos){
+	if(mirrors[0].ypos==mirrors[1].ypos || mirrors[0].xpos==mirrors[1].xpos){
 		chest="";
-		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received knight armor boots as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
+		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a Waning crescent moon as a reward.<br> Bring it to the castle knight, when his moon phases are complete the main gate will be unlocked");
 		var cnt=0;
 		while(cnt<cplayer.inventory.length && cplayer.inventory[cnt]!="."){
 			cnt++;
@@ -243,7 +258,7 @@ function dispexpla(){
 	if(puzzle[3]==false){
 		showplate="";
 		chest="";
-		chest=chest.concat("Use the arrow keys to put the ingridients in order.<br> Each row should be only one type of food.");
+		chest=chest.concat("Use the arrow keys to put the ingridients in order.<br> Each row should be only one type of food. Its like a 2D Rubik's cube");
 		document.getElementById("chestmessage").innerHTML = chest;
 	}else{
 		chest="";
@@ -290,7 +305,7 @@ function cookmove(dir,rowcol){
     		}
 	}if(cnt==3){
 		chest="";
-		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received knight armor pants as a reward.<br> Bring it to the castle knight, when his armor is complete the main gate will be unlocked");
+		chest=chest.concat("Congratulations you solved this puzzle!<br> You have received a Waning gibbous moon as a reward.<br> Bring it to the castle knight, when his moon phases are complete the main gate will be unlocked");
 		document.getElementById("chestmessage").innerHTML = chest;
 		var cnt=0;
 		while(cnt<cplayer.inventory.length && cplayer.inventory[cnt]!="."){
