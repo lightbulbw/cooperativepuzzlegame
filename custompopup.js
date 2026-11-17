@@ -56,35 +56,37 @@ function theknight(){
 	
 	var cnt=0;
 	if(gotarmor[0]){
-		chest=chest.concat("h");
+		chest=chest.concat("&#127762;");
 		cnt++;
 	}else{
 		chest=chest.concat(".&nbsp;");
 	}if(gotarmor[1]){
-		chest=chest.concat("c");
+		chest=chest.concat("&#127764;");
 		cnt++;
 	}else{
 		chest=chest.concat(".&nbsp;");
 	}if(gotarmor[2]){
-		chest=chest.concat("p");
+		chest=chest.concat("&#127766;");
 		cnt++;
 	}else{
 		chest=chest.concat(".&nbsp;");
 	}if(gotarmor[3]){
-		chest=chest.concat("s");
+		chest=chest.concat("&#127768;");
 		cnt++;
 	}else{
 		chest=chest.concat(".&nbsp;");
 	}
-	chest=chest.concat("Hi, I am the Castle Knight,");
+	if(cnt<4){
+		chest=chest.concat("<br>Hi, I am the Castle Knight,");
+	}
 	if(!(gotarmor[0] && gotarmor[1] && gotarmor[2] && gotarmor[3])){
 		var done=0;
 	for(var i=0; i<puzzle.length; i++){
 		if(puzzle[i]){done++;}
 		}if(cnt<4 && done==4){
-			chest=chest.concat("<br>Thank you for the armor pieces. If the other player also brings me its collected pieces I will unlock the front gate");
+			chest=chest.concat("<br>Thank you for the moon phases. If the other player also brings me its collected pieces I will unlock the front gate");
 		}else{
-			chest=chest.concat("<br>please give me all the armorpieces, then I will unlock the Main gate");
+			chest=chest.concat("<br>please give me all the moonphases, then I will unlock the main gate");
 		}
 	}
 	if(cnt==4){
