@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 
-<title> </title>
+<title>Castle escape room</title>
 
 <style>
 body{
@@ -197,6 +197,100 @@ body{
 	background-color:red;
 }
 
+
+#redarrows{
+    display:none;
+}
+
+#bigbluearrows{
+    display:none;
+}
+.buttonred{
+	color:red;
+	text-align:center;
+	background-color:#59001b;
+	border:0;
+	padding:8px 14px;
+	cursor:pointer;
+}
+.bigbuttonblue{
+	width:100px;
+	height:100px;
+	font-size:300%;
+	color:blue;
+	text-align:center;
+	/*if only want to change background opacity*/
+	background:rgba(10, 201, 187, 0.6);/*#0ac9b6 and opacity*/
+	border:0;
+	cursor:pointer;
+}
+/*wraps the game and arrows so absolute positions anchor to the game*/
+#gamewrap{
+    position:relative;
+    display:inline-block;
+}
+#bigbluearrows{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+    text-align:center;
+}
+
+/*box around toggle buttons*/
+.switch{
+	position:relative;
+	display:inline-block;
+	width:60px;
+	height:34px;
+	z-index:10;
+}
+
+/* Hide default HTML checkbox */
+.switch input{
+	opacity:0;
+	width:0;
+	height:0;
+}
+
+.toggle{
+	position:absolute;
+	cursor:pointer;
+	inset:0;
+	background-color:#ccc;
+	transition: .4s;
+}
+
+.toggle:before{
+	position:absolute;
+	content:"";
+	height:26px;
+	width:26px;
+	left:4px;
+	bottom:4px;
+	background-color:white;
+	transition: .4s;
+}
+
+input:checked + .toggle{
+	background-color:#2196F3;
+}
+
+input:focus + .toggle{
+	box-shadow: 0px 0px 1px #2196F3;
+}
+
+input:checked + .toggle:before{
+	transform: translateX(26px);
+}
+
+.toggle.round{
+	border-radius:34px;
+}
+
+.toggle.round:before{
+	border-radius:50%;
+}
 </style>
 
 </head>
@@ -356,6 +450,13 @@ O and be careful! There are rats(&#128000;).</div>
 </center>
 <div class="container">
 	<div id="sidebar">
+	    <!-- Rounded switch -->
+	    display big arrow buttons
+	    <label class="switch">
+		<input type="checkbox" id="bigdispb" onclick="selectbigbdisp()">
+		<span class="toggle round"></span>
+	    </label> 
+	
 	    <button onclick="instruct()">instructions</button><br>
 	    <button onclick="restart()">restart</button><br>
 	    <button onclick="changep()">change player</button><br>
@@ -367,11 +468,19 @@ O and be careful! There are rats(&#128000;).</div>
 	</div>
 
 	<center>
-	<pre id="thegame"></pre>
+	<div id="gamewrap">
+	    <pre id="thegame"></pre>
+		<div id="bigbluearrows">
+			<button class="bigbuttonblue" onclick="moveup()">/\</button><br>
+			<button class="bigbuttonblue" onclick="moveleft()">&lt;</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<button class="bigbuttonblue" onclick="moveright()">&gt;</button><br>
+			<button class="bigbuttonblue" onclick="movedown()">\/</button>
+		</div>
+	</div>
 	</center>
 
 </div>
-
 <div style="color:green;">created by Jessica Socher</div>
 <script src="custompopup.js"></script>
 <script src="gameplay.js"></script>

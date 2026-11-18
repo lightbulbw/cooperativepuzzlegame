@@ -6,6 +6,12 @@ function hideshow(show,x){
         }
 }
 
+//display arrow buttons
+function selectbigbdisp(){
+    hideshow(document.getElementById("bigdispb").checked, "bigbluearrows");
+}
+
+
 function custompopup(myobject){
 	freeze=true;
 	hideshow(true,"overlay");
@@ -32,8 +38,11 @@ function removepopup(){
 	hideshow(false,"m1");
 	hideshow(false,"m2");
 	hideshow(false,"instructions");
-	document.getElementById("mypopup").style.backgroundColor = "yellow";
-
+	document.getElementById("mypopup").style.backgroundColor="yellow";
+	for(var i=0; i<3; i++){
+		document.getElementById("box"+(i+1)).style.backgroundColor="red";
+	}
+	pcolor=[0,0,0];
 }
 
 function theknight(){
@@ -82,6 +91,7 @@ function theknight(){
 	if(!(gotarmor[0] && gotarmor[1] && gotarmor[2] && gotarmor[3])){
 		var done=0;
 	for(var i=0; i<puzzle.length; i++){
+		if(i==2){continue;}
 		if(puzzle[i]){done++;}
 		}if(cnt<4 && done==4){
 			chest=chest.concat("<br>Thank you for the moon phases. If the other player also brings me its collected pieces I will unlock the front gate");
